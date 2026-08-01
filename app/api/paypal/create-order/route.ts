@@ -6,8 +6,7 @@ import {
 
 
 const paypalBase =
-  process.env.PAYPAL_API_BASE ||
-  "https://api-m.sandbox.paypal.com";
+  process.env.PAYPAL_API_BASE;
 
 
 const clientId =
@@ -24,6 +23,40 @@ const supabaseUrl =
 
 const supabaseSecretKey =
   process.env.SUPABASE_SECRET_KEY;
+
+
+if (!paypalBase) {
+  throw new Error(
+    "Missing PAYPAL_API_BASE environment variable."
+  );
+}
+
+
+if (!clientId || !clientSecret) {
+  throw new Error(
+    "Missing PayPal credentials."
+  );
+}
+
+
+if (!supabaseUrl || !supabaseSecretKey) {
+  throw new Error(
+    "Missing server-side Supabase credentials."
+  );
+}
+
+
+const supabaseAdmin = createClient(
+  supabaseUrl,
+  supabaseSecretKey,
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+      detectSessionInUrl: false,
+    },
+  }
+);
 
 
 const SHIRT_PRICE_CENTS = 4999;
@@ -59,34 +92,7 @@ const productNames: Record<string, string> = {
 };
 
 
-if (!supabaseUrl || !supabaseSecretKey) {
-  throw new Error(
-    "Missing server-side Supabase credentials."
-  );
-}
-
-
-const supabaseAdmin = createClient(
-  supabaseUrl,
-  supabaseSecretKey,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false,
-    },
-  }
-);
-
-
 async function getAccessToken() {
-  if (!clientId || !clientSecret) {
-    throw new Error(
-      "Missing PayPal credentials."
-    );
-  }
-
-
   const auth = Buffer.from(
     `${clientId}:${clientSecret}`
   ).toString("base64");
@@ -112,13 +118,27 @@ async function getAccessToken() {
 
 
   if (!response.ok) {
+    console.error(
+      "PayPal access-token error:",
+      response.status,
+      responseText
+    );
+
+
     throw new Error(
-      `PayPal token error: ${responseText}`
+      "PayPal could not authenticate the store."
     );
   }
 
 
   const data = JSON.parse(responseText);
+
+
+  if (!data.access_token) {
+    throw new Error(
+      "PayPal did not return an access token."
+    );
+  }
 
 
   return data.access_token as string;
@@ -144,7 +164,7 @@ export async function POST(
       return NextResponse.json(
         {
           error:
-            "Your shopping bag is empty.",
+            "Your shopping cart is empty.",
         },
         { status: 400 }
       );
@@ -327,6 +347,12 @@ export async function POST(
         data =
           JSON.parse(responseText);
       } catch {
+        console.error(
+          "Unreadable PayPal response:",
+          responseText
+        );
+
+
         throw new Error(
           "PayPal returned an unreadable response."
         );
