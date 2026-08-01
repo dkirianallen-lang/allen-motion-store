@@ -11,7 +11,8 @@ type Product = {
   name: string;
   shortName: string;
   price: number;
-  images: string[];
+  frontImage: string;
+  backImage: string;
   color: string;
 };
 
@@ -34,10 +35,8 @@ const products: Record<string, Product> = {
     name: "ASCEND TRACK GRAPHIC TEE — VINTAGE GRAY",
     shortName: "Vintage Gray",
     price: 49.99,
-    images: [
-      "/gray-shirt.png",
-      "/gray-shirt-back.png",
-    ],
+    frontImage: "/gray-shirt.png",
+    backImage: "/gray-shirt-back.png",
     color: "Vintage Gray",
   },
 
@@ -46,10 +45,8 @@ const products: Record<string, Product> = {
     name: "ASCEND TRACK GRAPHIC TEE — VINTAGE BLACK",
     shortName: "Vintage Black",
     price: 49.99,
-    images: [
-      "/black-shirt.png",
-      "/black-shirt-back.png",
-    ],
+    frontImage: "/black-shirt.png",
+    backImage: "/black-shirt-back.png",
     color: "Vintage Black",
   },
 
@@ -58,10 +55,8 @@ const products: Record<string, Product> = {
     name: "ASCEND TRACK GRAPHIC TEE — CREAM",
     shortName: "Cream",
     price: 49.99,
-    images: [
-      "/cream-shirt.png",
-      "/cream-shirt-back.png",
-    ],
+    frontImage: "/cream-shirt.png",
+    backImage: "/cream-shirt-back.png",
     color: "Cream",
   },
 };
@@ -86,10 +81,6 @@ export default function ProductPage() {
 
   const [selectedSize, setSelectedSize] =
     useState("");
-
-
-  const [selectedImageIndex, setSelectedImageIndex] =
-    useState(0);
 
 
   const [message, setMessage] =
@@ -185,13 +176,6 @@ export default function ProductPage() {
       );
     };
   }, []);
-
-
-  useEffect(() => {
-    setSelectedImageIndex(0);
-    setSelectedSize("");
-    setMessage("");
-  }, [slug]);
 
 
   useEffect(() => {
@@ -360,7 +344,7 @@ export default function ProductPage() {
       slug,
       name: product.name,
       price: product.price,
-      image: product.images[0],
+      image: product.frontImage,
       color: product.color,
       size: selectedSize,
       quantity: 1,
@@ -409,15 +393,6 @@ export default function ProductPage() {
   }
 
 
-  function showNextImage() {
-    setSelectedImageIndex(
-      (currentIndex) =>
-        (currentIndex + 1) %
-        product.images.length
-    );
-  }
-
-
   return (
     <main className="productPage">
       <header className="productHeader">
@@ -450,81 +425,31 @@ export default function ProductPage() {
 
       <section className="productLayout">
         <div className="productPhotoArea">
-          <button
-            type="button"
-            className="productImageButton"
-            onClick={showNextImage}
-            aria-label={`View ${
-              selectedImageIndex === 0
-                ? "back"
-                : "front"
-            } of ${product.name}`}
-          >
+          <div className="productImageView">
+            <p className="productImageLabel">
+              Front
+            </p>
+
+
             <img
-              src={
-                product.images[
-                  selectedImageIndex
-                ]
-              }
-              alt={`${product.name} ${
-                selectedImageIndex === 0
-                  ? "front view"
-                  : "back view"
-              }`}
+              src={product.frontImage}
+              alt={`${product.name} front view`}
               className="productMainImage"
             />
-          </button>
+          </div>
 
 
-          <p className="imageClickHint">
-            Click image to view{" "}
-            {selectedImageIndex === 0
-              ? "back"
-              : "front"}
-          </p>
+          <div className="productImageView">
+            <p className="productImageLabel">
+              Back
+            </p>
 
 
-          <div className="productThumbnails">
-            {product.images.map(
-              (image, imageIndex) => (
-                <button
-                  key={image}
-                  type="button"
-                  className={
-                    selectedImageIndex ===
-                    imageIndex
-                      ? "productThumbnail productThumbnailActive"
-                      : "productThumbnail"
-                  }
-                  onClick={() =>
-                    setSelectedImageIndex(
-                      imageIndex
-                    )
-                  }
-                  aria-label={`View ${
-                    imageIndex === 0
-                      ? "front"
-                      : "back"
-                  } of ${product.name}`}
-                >
-                  <img
-                    src={image}
-                    alt={`${product.name} ${
-                      imageIndex === 0
-                        ? "front thumbnail"
-                        : "back thumbnail"
-                    }`}
-                  />
-
-
-                  <span>
-                    {imageIndex === 0
-                      ? "Front"
-                      : "Back"}
-                  </span>
-                </button>
-              )
-            )}
+            <img
+              src={product.backImage}
+              alt={`${product.name} back view`}
+              className="productMainImage"
+            />
           </div>
         </div>
 
