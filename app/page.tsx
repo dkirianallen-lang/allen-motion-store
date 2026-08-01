@@ -20,7 +20,7 @@ const products = [
     slug: "gray",
     name:
       "ASCEND TRACK GRAPHIC TEE — VINTAGE GRAY",
-    price: 49.99,
+    price: 39.99,
     image: "/gray-shirt.png",
   },
   {
@@ -28,7 +28,7 @@ const products = [
     slug: "black",
     name:
       "ASCEND TRACK GRAPHIC TEE — VINTAGE BLACK",
-    price: 49.99,
+    price: 39.99,
     image: "/black-shirt.png",
   },
   {
@@ -36,7 +36,7 @@ const products = [
     slug: "cream",
     name:
       "ASCEND TRACK GRAPHIC TEE — CREAM",
-    price: 49.99,
+    price: 39.99,
     image: "/cream-shirt.png",
   },
 ];
@@ -532,7 +532,7 @@ export default function Home() {
 
         <p>
           Founded by college sprinter and
-          creator D'Kirian Allen, Allen Motion
+          creator D&apos;Kirian Allen, Allen Motion
           Co. blends athletics, purpose,
           and streetwear into clothing
           designed to mean something.

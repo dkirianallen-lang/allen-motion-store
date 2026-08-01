@@ -28,52 +28,99 @@ type ApiResponse = {
 };
 
 
+const PRODUCT_PRICE = 39.99;
 const SHIPPING_COST = 9.99;
 
 
 export default function CartPage() {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [cart, setCart] =
+    useState<CartItem[]>([]);
 
 
-  const [checkoutMessage, setCheckoutMessage] =
-    useState("");
-
-
-  const [paymentComplete, setPaymentComplete] =
+  const [loaded, setLoaded] =
     useState(false);
 
 
+  const [
+    checkoutMessage,
+    setCheckoutMessage,
+  ] = useState("");
+
+
+  const [
+    paymentComplete,
+    setPaymentComplete,
+  ] = useState(false);
+
+
   const paypalClientId =
-    process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+    process.env
+      .NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
 
 
   useEffect(() => {
     try {
       const savedCart = JSON.parse(
-        localStorage.getItem("allenMotionCart") || "[]"
+        localStorage.getItem(
+          "allenMotionCart"
+        ) || "[]"
       );
 
 
-      setCart(
-        Array.isArray(savedCart) ? savedCart : []
+      if (!Array.isArray(savedCart)) {
+        setCart([]);
+        localStorage.removeItem(
+          "allenMotionCart"
+        );
+        return;
+      }
+
+
+      const updatedCart =
+        savedCart.map(
+          (item: CartItem) => ({
+            ...item,
+            price: PRODUCT_PRICE,
+          })
+        );
+
+
+      setCart(updatedCart);
+
+
+      localStorage.setItem(
+        "allenMotionCart",
+        JSON.stringify(updatedCart)
       );
     } catch {
       setCart([]);
-      localStorage.removeItem("allenMotionCart");
+
+
+      localStorage.removeItem(
+        "allenMotionCart"
+      );
     } finally {
       setLoaded(true);
     }
   }, []);
 
 
-  function saveCart(updatedCart: CartItem[]) {
-    setCart(updatedCart);
+  function saveCart(
+    updatedCart: CartItem[]
+  ) {
+    const normalizedCart =
+      updatedCart.map((item) => ({
+        ...item,
+        price: PRODUCT_PRICE,
+      }));
+
+
+    setCart(normalizedCart);
 
 
     localStorage.setItem(
       "allenMotionCart",
-      JSON.stringify(updatedCart)
+      JSON.stringify(normalizedCart)
     );
 
 
@@ -83,10 +130,14 @@ export default function CartPage() {
   }
 
 
-  function increaseQuantity(index: number) {
-    const updatedCart = cart.map((item) => ({
-      ...item,
-    }));
+  function increaseQuantity(
+    index: number
+  ) {
+    const updatedCart = cart.map(
+      (item) => ({
+        ...item,
+      })
+    );
 
 
     const item = updatedCart[index];
@@ -98,8 +149,10 @@ export default function CartPage() {
 
 
     if (
-      typeof item.availableQuantity === "number" &&
-      item.quantity >= item.availableQuantity
+      typeof item.availableQuantity ===
+        "number" &&
+      item.quantity >=
+        item.availableQuantity
     ) {
       setCheckoutMessage(
         `Only ${item.availableQuantity} of that size is available.`
@@ -118,10 +171,14 @@ export default function CartPage() {
   }
 
 
-  function decreaseQuantity(index: number) {
-    const updatedCart = cart.map((item) => ({
-      ...item,
-    }));
+  function decreaseQuantity(
+    index: number
+  ) {
+    const updatedCart = cart.map(
+      (item) => ({
+        ...item,
+      })
+    );
 
 
     const item = updatedCart[index];
@@ -146,7 +203,8 @@ export default function CartPage() {
 
   function removeItem(index: number) {
     const updatedCart = cart.filter(
-      (_, itemIndex) => itemIndex !== index
+      (_, itemIndex) =>
+        itemIndex !== index
     );
 
 
@@ -158,7 +216,8 @@ export default function CartPage() {
   async function readJsonResponse(
     response: Response
   ): Promise<ApiResponse> {
-    const responseText = await response.text();
+    const responseText =
+      await response.text();
 
 
     if (!responseText) {
@@ -191,13 +250,16 @@ export default function CartPage() {
 
   const subtotal = cart.reduce(
     (total, item) =>
-      total + item.price * item.quantity,
+      total +
+      PRODUCT_PRICE * item.quantity,
     0
   );
 
 
   const shipping =
-    cart.length > 0 ? SHIPPING_COST : 0;
+    cart.length > 0
+      ? SHIPPING_COST
+      : 0;
 
 
   const total = subtotal + shipping;
@@ -222,7 +284,10 @@ export default function CartPage() {
   return (
     <main className="cartPage">
       <header className="cartHeader">
-        <Link href="/" className="backLink">
+        <Link
+          href="/"
+          className="backLink"
+        >
           ← Continue shopping
         </Link>
 
@@ -253,26 +318,34 @@ export default function CartPage() {
 
         {paymentComplete ? (
           <div className="emptyCart">
-            <h2>Payment approved.</h2>
+            <h2>
+              Payment approved.
+            </h2>
 
 
             <p>
-              Your Sandbox test order was completed
+              Your order was completed
               successfully.
             </p>
 
 
-            <Link href="/" className="shopButton">
+            <Link
+              href="/"
+              className="shopButton"
+            >
               RETURN HOME
             </Link>
           </div>
         ) : cart.length === 0 ? (
           <div className="emptyCart">
-            <h2>Your cart is empty.</h2>
+            <h2>
+              Your cart is empty.
+            </h2>
 
 
             <p>
-              Your next ASCEND piece is waiting.
+              Your next ASCEND piece is
+              waiting.
             </p>
 
 
@@ -286,95 +359,113 @@ export default function CartPage() {
         ) : (
           <div className="cartLayout">
             <div className="cartItems">
-              {cart.map((item, index) => (
-                <article
-                  className="cartItem"
-                  key={`${item.slug}-${item.size}`}
-                >
-                  <Link
-                    href={`/products/${item.slug}`}
-                    className="cartItemImage"
+              {cart.map(
+                (item, index) => (
+                  <article
+                    className="cartItem"
+                    key={`${item.slug}-${item.size}`}
                   >
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                    />
-                  </Link>
+                    <Link
+                      href={`/products/${item.slug}`}
+                      className="cartItemImage"
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                      />
+                    </Link>
 
 
-                  <div className="cartItemDetails">
-                    <p className="cartItemCollection">
-                      ASCEND COLLECTION
-                    </p>
+                    <div className="cartItemDetails">
+                      <p className="cartItemCollection">
+                        ASCEND COLLECTION
+                      </p>
 
 
-                    <h2>{item.name}</h2>
+                      <h2>
+                        {item.name}
+                      </h2>
 
 
-                    <p>
-                      Color:{" "}
-                      <strong>{item.color}</strong>
-                    </p>
+                      <p>
+                        Color:{" "}
+                        <strong>
+                          {item.color}
+                        </strong>
+                      </p>
 
 
-                    <p>
-                      Size:{" "}
-                      <strong>{item.size}</strong>
-                    </p>
+                      <p>
+                        Size:{" "}
+                        <strong>
+                          {item.size}
+                        </strong>
+                      </p>
 
 
-                    <p className="cartItemPrice">
-                      ${item.price.toFixed(2)}
-                    </p>
+                      <p className="cartItemPrice">
+                        $
+                        {PRODUCT_PRICE.toFixed(
+                          2
+                        )}
+                      </p>
 
 
-                    <div className="quantityControls">
+                      <div className="quantityControls">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            decreaseQuantity(
+                              index
+                            )
+                          }
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+
+
+                        <span>
+                          {item.quantity}
+                        </span>
+
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            increaseQuantity(
+                              index
+                            )
+                          }
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+
+
                       <button
                         type="button"
+                        className="removeItemButton"
                         onClick={() =>
-                          decreaseQuantity(index)
+                          removeItem(index)
                         }
-                        aria-label="Decrease quantity"
                       >
-                        −
-                      </button>
-
-
-                      <span>{item.quantity}</span>
-
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          increaseQuantity(index)
-                        }
-                        aria-label="Increase quantity"
-                      >
-                        +
+                        Remove
                       </button>
                     </div>
 
 
-                    <button
-                      type="button"
-                      className="removeItemButton"
-                      onClick={() =>
-                        removeItem(index)
-                      }
-                    >
-                      Remove
-                    </button>
-                  </div>
-
-
-                  <p className="cartItemTotal">
-                    $
-                    {(
-                      item.price * item.quantity
-                    ).toFixed(2)}
-                  </p>
-                </article>
-              ))}
+                    <p className="cartItemTotal">
+                      $
+                      {(
+                        PRODUCT_PRICE *
+                        item.quantity
+                      ).toFixed(2)}
+                    </p>
+                  </article>
+                )
+              )}
             </div>
 
 
@@ -389,17 +480,21 @@ export default function CartPage() {
 
 
                 <span>
-                  ${subtotal.toFixed(2)}
+                  $
+                  {subtotal.toFixed(2)}
                 </span>
               </div>
 
 
               <div className="summaryRow">
-                <span>U.S. shipping</span>
+                <span>
+                  U.S. shipping
+                </span>
 
 
                 <span>
-                  ${shipping.toFixed(2)}
+                  $
+                  {shipping.toFixed(2)}
                 </span>
               </div>
 
@@ -419,12 +514,14 @@ export default function CartPage() {
 
               {!paypalClientId ? (
                 <p className="cartMessage">
-                  PayPal Client ID is missing.
+                  PayPal Client ID is
+                  missing.
                 </p>
               ) : (
                 <PayPalScriptProvider
                   options={{
-                    clientId: paypalClientId,
+                    clientId:
+                      paypalClientId,
                     currency: "USD",
                     intent: "capture",
                   }}
@@ -440,27 +537,41 @@ export default function CartPage() {
                       total,
                     ]}
                     createOrder={async () => {
-                      setCheckoutMessage("");
-
-
-                      const response = await fetch(
-                        "/api/paypal/create-order",
-                        {
-                          method: "POST",
-                          headers: {
-                            "Content-Type":
-                              "application/json",
-                          },
-                          body: JSON.stringify({
-                            cart: cart.map((item) => ({
-                              slug: item.slug,
-                              size: item.size,
-                              quantity:
-                                item.quantity,
-                            })),
-                          }),
-                        }
+                      setCheckoutMessage(
+                        ""
                       );
+
+
+                      const response =
+                        await fetch(
+                          "/api/paypal/create-order",
+                          {
+                            method:
+                              "POST",
+                            headers: {
+                              "Content-Type":
+                                "application/json",
+                            },
+                            body:
+                              JSON.stringify(
+                                {
+                                  cart:
+                                    cart.map(
+                                      (
+                                        item
+                                      ) => ({
+                                        slug:
+                                          item.slug,
+                                        size:
+                                          item.size,
+                                        quantity:
+                                          item.quantity,
+                                      })
+                                    ),
+                                }
+                              ),
+                          }
+                        );
 
 
                       const responseData =
@@ -493,33 +604,48 @@ export default function CartPage() {
 
                       return responseData.id;
                     }}
-                    onApprove={async (data) => {
+                    onApprove={async (
+                      data
+                    ) => {
                       setCheckoutMessage(
                         "Finalizing payment..."
                       );
 
 
-                      const response = await fetch(
-                        "/api/paypal/capture-order",
-                        {
-                          method: "POST",
-                          headers: {
-                            "Content-Type":
-                              "application/json",
-                          },
-                          body: JSON.stringify({
-                            orderID: data.orderID,
+                      const response =
+                        await fetch(
+                          "/api/paypal/capture-order",
+                          {
+                            method:
+                              "POST",
+                            headers: {
+                              "Content-Type":
+                                "application/json",
+                            },
+                            body:
+                              JSON.stringify(
+                                {
+                                  orderID:
+                                    data.orderID,
 
 
-                            cart: cart.map((item) => ({
-                              slug: item.slug,
-                              size: item.size,
-                              quantity:
-                                item.quantity,
-                            })),
-                          }),
-                        }
-                      );
+                                  cart:
+                                    cart.map(
+                                      (
+                                        item
+                                      ) => ({
+                                        slug:
+                                          item.slug,
+                                        size:
+                                          item.size,
+                                        quantity:
+                                          item.quantity,
+                                      })
+                                    ),
+                                }
+                              ),
+                          }
+                        );
 
 
                       const captureData =
@@ -530,7 +656,8 @@ export default function CartPage() {
 
                       if (
                         !response.ok ||
-                        captureData.success === false
+                        captureData.success ===
+                          false
                       ) {
                         const errorMessage =
                           getErrorMessage(
@@ -556,13 +683,21 @@ export default function CartPage() {
 
 
                       window.dispatchEvent(
-                        new Event("cart-updated")
+                        new Event(
+                          "cart-updated"
+                        )
                       );
 
 
                       setCart([]);
-                      setCheckoutMessage("");
-                      setPaymentComplete(true);
+                      setCheckoutMessage(
+                        ""
+                      );
+
+
+                      setPaymentComplete(
+                        true
+                      );
                     }}
                     onCancel={() => {
                       setCheckoutMessage(
@@ -593,7 +728,8 @@ export default function CartPage() {
 
 
               <p className="secureCheckoutText">
-                Sandbox test checkout powered by PayPal
+                Secure checkout powered by
+                PayPal
               </p>
 
 

@@ -59,7 +59,7 @@ const supabaseAdmin = createClient(
 );
 
 
-const SHIRT_PRICE_CENTS = 4999;
+const SHIRT_PRICE_CENTS = 3999;
 const SHIPPING_CENTS = 999;
 
 
