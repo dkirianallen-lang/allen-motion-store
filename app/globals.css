@@ -31,7 +31,9 @@ body {
 
 
 button,
-a {
+a,
+input,
+textarea {
   font: inherit;
 }
 
@@ -630,6 +632,213 @@ a {
 }
 
 
+/* =========================================================
+   CONTACT SECTION
+========================================================= */
+
+
+.contactSection {
+  padding: 105px 7% 115px;
+  border-top: 1px solid
+    rgba(201, 149, 63, 0.4);
+  border-bottom: 1px solid
+    rgba(201, 149, 63, 0.35);
+  color: var(--cream);
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(201, 149, 63, 0.14),
+      transparent 36%
+    ),
+    linear-gradient(
+      180deg,
+      #12110f,
+      #090807
+    );
+}
+
+
+.contactHeading {
+  max-width: 760px;
+  margin: 0 auto 55px;
+  text-align: center;
+}
+
+
+.contactHeading h2 {
+  margin: 14px 0;
+  font-family: Georgia, serif;
+  font-size: clamp(44px, 7vw, 76px);
+  font-weight: 400;
+  letter-spacing: 5px;
+}
+
+
+.contactHeading > p:last-child {
+  max-width: 620px;
+  margin: 20px auto 0;
+  color: var(--muted);
+  font-family: Georgia, serif;
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+
+.contactLine {
+  width: 55px;
+  height: 3px;
+  margin: 22px auto;
+  background: var(--gold);
+}
+
+
+.contactForm {
+  width: min(800px, 100%);
+  margin: auto;
+  display: grid;
+  gap: 13px;
+}
+
+
+.contactForm label {
+  margin-top: 17px;
+  color: var(--cream);
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+
+.contactForm input,
+.contactForm textarea {
+  width: 100%;
+  border: 2px solid
+    rgba(238, 227, 210, 0.78);
+  border-radius: 5px;
+  outline: none;
+  color: var(--cream);
+  background: #141311;
+  font-family: inherit;
+  font-size: 17px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+
+.contactForm input {
+  min-height: 64px;
+  padding: 14px 17px;
+}
+
+
+.contactForm textarea {
+  min-height: 250px;
+  padding: 17px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+
+.contactForm input:hover,
+.contactForm textarea:hover {
+  border-color: var(--light-gold);
+}
+
+
+.contactForm input:focus,
+.contactForm textarea:focus {
+  border-color: var(--gold);
+  background: #181612;
+  box-shadow:
+    0 0 0 4px
+    rgba(201, 149, 63, 0.14);
+}
+
+
+.contactForm button {
+  width: 100%;
+  min-height: 68px;
+  margin-top: 28px;
+  border: 1px solid var(--gold);
+  border-radius: 5px;
+  color: #050505;
+  background: var(--light-gold);
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  transition:
+    color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+
+.contactForm button:hover {
+  color: var(--light-gold);
+  background: transparent;
+  transform: translateY(-2px);
+}
+
+
+.contactForm button:active {
+  transform: translateY(0);
+}
+
+
+.contactFormMessage {
+  margin: 18px 0 0;
+  padding: 15px;
+  border: 1px solid
+    rgba(201, 149, 63, 0.42);
+  color: var(--light-gold);
+  background:
+    rgba(201, 149, 63, 0.08);
+  text-align: center;
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   SITE FOOTER
+========================================================= */
+
+
+.siteFooter {
+  min-height: 200px;
+  padding: 50px 7%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  border-top: 1px solid
+    rgba(201, 149, 63, 0.5);
+  color: var(--muted);
+  background: #030303;
+}
+
+
+.siteFooter strong,
+.siteFooter a {
+  color: var(--light-gold);
+  letter-spacing: 3px;
+}
+
+
+.siteFooter a {
+  overflow-wrap: anywhere;
+}
+
+
+.siteFooter p {
+  line-height: 1.6;
+}
+
+
+/* Keeps styling for any other footer elements. */
+
+
 footer {
   min-height: 200px;
   padding: 50px 7%;
@@ -712,10 +921,6 @@ footer a {
 }
 
 
-/*
-  Front and back images appear together
-  in one column on the same product page.
-*/
 .productPhotoArea {
   min-height: 0;
   padding: 32px;
@@ -1307,293 +1512,6 @@ footer a {
 
 
 /* =========================================================
-   TABLET
-========================================================= */
-
-
-@media (max-width: 950px) {
-  .cartLayout {
-    grid-template-columns: 1fr;
-  }
-
-
-  .orderSummary {
-    position: static;
-  }
-}
-
-
-@media (max-width: 900px) {
-  .desktopNav {
-    display: none;
-  }
-
-
-  .mobileMenu {
-    position: relative;
-    z-index: 30;
-    padding: 30px 7%;
-    display: grid;
-    gap: 20px;
-    border-bottom: 1px solid
-      rgba(201, 149, 63, 0.4);
-    background: #080808;
-  }
-
-
-  .hero {
-    min-height: auto;
-    padding: 80px 7% 50px;
-    grid-template-columns: 1fr;
-  }
-
-
-  .heroContent {
-    margin: auto;
-    text-align: center;
-  }
-
-
-  .goldLine {
-    margin: 30px auto;
-  }
-
-
-  .heroShirt {
-    margin-top: 45px;
-  }
-
-
-  .runner {
-    top: 48%;
-    right: 10%;
-  }
-
-
-  .values {
-    grid-template-columns:
-      repeat(2, 1fr);
-  }
-
-
-  .productsGrid {
-    max-width: 520px;
-    grid-template-columns: 1fr;
-  }
-
-
-  .productImage {
-    min-height: 320px;
-  }
-
-
-  .productLayout {
-    padding-top: 35px;
-    grid-template-columns: 1fr;
-    gap: 35px;
-  }
-
-
-  .productPhotoArea {
-    min-height: 0;
-    padding: 22px;
-    gap: 24px;
-  }
-
-
-  .productImageView
-  .productMainImage {
-    max-height: 500px;
-  }
-}
-
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-
-@media (max-width: 650px) {
-  .cartHeader {
-    min-height: 88px;
-    padding-inline: 18px;
-  }
-
-
-  .cartHeaderLabel {
-    font-size: 12px;
-  }
-
-
-  .cartContainer {
-    padding-top: 45px;
-    padding-inline: 18px;
-  }
-
-
-  .cartItem {
-    padding: 16px;
-    grid-template-columns:
-      110px 1fr;
-    gap: 18px;
-  }
-
-
-  .cartItemImage {
-    height: 140px;
-  }
-
-
-  .cartItemDetails h2 {
-    font-size: 16px;
-  }
-
-
-  .cartItemTotal {
-    grid-column: 2;
-    margin: 0;
-  }
-
-
-  .orderSummary {
-    padding: 24px;
-  }
-}
-
-
-@media (max-width: 560px) {
-  .header {
-    min-height: 95px;
-    padding-inline: 20px;
-  }
-
-
-  .brand {
-    width: 115px;
-  }
-
-
-  .brandGlobe {
-    font-size: 25px;
-  }
-
-
-  .brand h1 {
-    font-size: 24px;
-  }
-
-
-  .brand p {
-    font-size: 9px;
-    letter-spacing: 3px;
-  }
-
-
-  .cartButton {
-    font-size: 0;
-  }
-
-
-  .cartButton span {
-    font-size: 12px;
-  }
-
-
-  .heroContent h2 {
-    font-size: 62px;
-    letter-spacing: 1px;
-  }
-
-
-  .heroContent h3 {
-    font-size: 15px;
-    letter-spacing: 4px;
-  }
-
-
-  .shirtShape {
-    min-height: 400px;
-  }
-
-
-  .values {
-    grid-template-columns:
-      1fr 1fr;
-  }
-
-
-  .values article {
-    padding: 28px 12px;
-  }
-
-
-  .values h3 {
-    font-size: 13px;
-  }
-
-
-  footer {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-
-  .productHeader {
-    min-height: 88px;
-    padding-inline: 18px;
-  }
-
-
-  .productLogo {
-    width: 105px;
-  }
-
-
-  .backLink {
-    font-size: 0;
-  }
-
-
-  .backLink::after {
-    content: "←";
-    font-size: 25px;
-  }
-
-
-  .productLayout {
-    padding-inline: 18px;
-  }
-
-
-  .productPhotoArea {
-    min-height: 0;
-    padding: 12px;
-    gap: 18px;
-  }
-
-
-  .productImageView {
-    padding: 10px;
-  }
-
-
-  .productImageView
-  .productMainImage {
-    max-height: none;
-  }
-
-
-  .productImageLabel {
-    margin-bottom: 10px;
-    font-size: 11px;
-  }
-
-
-  .sizeButtons {
-    grid-template-columns: 1fr;
-  }
-}
-/* =========================================================
    HOMEPAGE VIDEO HERO
 ========================================================= */
 
@@ -1740,7 +1658,106 @@ footer a {
 }
 
 
+/* =========================================================
+   TABLET
+========================================================= */
+
+
+@media (max-width: 950px) {
+  .cartLayout {
+    grid-template-columns: 1fr;
+  }
+
+
+  .orderSummary {
+    position: static;
+  }
+}
+
+
 @media (max-width: 900px) {
+  .desktopNav {
+    display: none;
+  }
+
+
+  .mobileMenu {
+    position: relative;
+    z-index: 30;
+    padding: 30px 7%;
+    display: grid;
+    gap: 20px;
+    border-bottom: 1px solid
+      rgba(201, 149, 63, 0.4);
+    background: #080808;
+  }
+
+
+  .hero {
+    min-height: auto;
+    padding: 80px 7% 50px;
+    grid-template-columns: 1fr;
+  }
+
+
+  .heroContent {
+    margin: auto;
+    text-align: center;
+  }
+
+
+  .goldLine {
+    margin: 30px auto;
+  }
+
+
+  .heroShirt {
+    margin-top: 45px;
+  }
+
+
+  .runner {
+    top: 48%;
+    right: 10%;
+  }
+
+
+  .values {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+
+  .productsGrid {
+    max-width: 520px;
+    grid-template-columns: 1fr;
+  }
+
+
+  .productImage {
+    min-height: 320px;
+  }
+
+
+  .productLayout {
+    padding-top: 35px;
+    grid-template-columns: 1fr;
+    gap: 35px;
+  }
+
+
+  .productPhotoArea {
+    min-height: 0;
+    padding: 22px;
+    gap: 24px;
+  }
+
+
+  .productImageView .productMainImage {
+    max-height: 500px;
+  }
+
+
   .videoHero {
     min-height: 760px;
     align-items: flex-end;
@@ -1791,7 +1808,238 @@ footer a {
 }
 
 
+/* =========================================================
+   MOBILE
+========================================================= */
+
+
+@media (max-width: 650px) {
+  .cartHeader {
+    min-height: 88px;
+    padding-inline: 18px;
+  }
+
+
+  .cartHeaderLabel {
+    font-size: 12px;
+  }
+
+
+  .cartContainer {
+    padding-top: 45px;
+    padding-inline: 18px;
+  }
+
+
+  .cartItem {
+    padding: 16px;
+    grid-template-columns:
+      110px 1fr;
+    gap: 18px;
+  }
+
+
+  .cartItemImage {
+    height: 140px;
+  }
+
+
+  .cartItemDetails h2 {
+    font-size: 16px;
+  }
+
+
+  .cartItemTotal {
+    grid-column: 2;
+    margin: 0;
+  }
+
+
+  .orderSummary {
+    padding: 24px;
+  }
+
+
+  .contactSection {
+    padding: 75px 24px 85px;
+  }
+
+
+  .contactHeading {
+    margin-bottom: 38px;
+  }
+
+
+  .contactHeading h2 {
+    font-size: 48px;
+  }
+
+
+  .contactHeading > p:last-child {
+    font-size: 17px;
+  }
+
+
+  .contactForm label {
+    font-size: 17px;
+  }
+
+
+  .contactForm input {
+    min-height: 58px;
+  }
+
+
+  .contactForm textarea {
+    min-height: 220px;
+  }
+
+
+  .contactForm button {
+    min-height: 62px;
+  }
+
+
+  .siteFooter {
+    padding-inline: 24px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
 @media (max-width: 560px) {
+  .header {
+    min-height: 95px;
+    padding-inline: 20px;
+  }
+
+
+  .brand {
+    width: 115px;
+  }
+
+
+  .brandGlobe {
+    font-size: 25px;
+  }
+
+
+  .brand h1 {
+    font-size: 24px;
+  }
+
+
+  .brand p {
+    font-size: 9px;
+    letter-spacing: 3px;
+  }
+
+
+  .cartButton {
+    font-size: 0;
+  }
+
+
+  .cartButton span {
+    font-size: 12px;
+  }
+
+
+  .heroContent h2 {
+    font-size: 62px;
+    letter-spacing: 1px;
+  }
+
+
+  .heroContent h3 {
+    font-size: 15px;
+    letter-spacing: 4px;
+  }
+
+
+  .shirtShape {
+    min-height: 400px;
+  }
+
+
+  .values {
+    grid-template-columns:
+      1fr 1fr;
+  }
+
+
+  .values article {
+    padding: 28px 12px;
+  }
+
+
+  .values h3 {
+    font-size: 13px;
+  }
+
+
+  footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+
+  .productHeader {
+    min-height: 88px;
+    padding-inline: 18px;
+  }
+
+
+  .productLogo {
+    width: 105px;
+  }
+
+
+  .backLink {
+    font-size: 0;
+  }
+
+
+  .backLink::after {
+    content: "←";
+    font-size: 25px;
+  }
+
+
+  .productLayout {
+    padding-inline: 18px;
+  }
+
+
+  .productPhotoArea {
+    min-height: 0;
+    padding: 12px;
+    gap: 18px;
+  }
+
+
+  .productImageView {
+    padding: 10px;
+  }
+
+
+  .productImageView .productMainImage {
+    max-height: none;
+  }
+
+
+  .productImageLabel {
+    margin-bottom: 10px;
+    font-size: 11px;
+  }
+
+
+  .sizeButtons {
+    grid-template-columns: 1fr;
+  }
+
+
   .videoHero {
     min-height: 690px;
   }
@@ -1845,5 +2093,138 @@ footer a {
     padding: 17px 20px;
     text-align: center;
     letter-spacing: 3px;
+  }
+
+
+  .contactSection {
+    padding-inline: 18px;
+  }
+
+
+  .contactHeading h2 {
+    font-size: 43px;
+    letter-spacing: 3px;
+  }
+
+
+  .contactForm input,
+  .contactForm textarea {
+    font-size: 16px;
+  }
+
+
+  .contactForm button {
+    letter-spacing: 2px;
+  }
+}
+/* =========================================================
+   SHOP MOTIVATION POP-UP
+========================================================= */
+
+
+.shopMotivationOverlay {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(6px);
+  animation:
+    shopOverlayFade 0.25s ease;
+}
+
+
+.shopMotivationCard {
+  width: min(540px, 100%);
+  padding: 45px 30px;
+  border: 1px solid var(--gold);
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(201, 149, 63, 0.15),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      #17140f,
+      #070707
+    );
+  text-align: center;
+  box-shadow:
+    0 20px 70px
+    rgba(0, 0, 0, 0.75);
+  animation:
+    shopCardRise 0.35s ease;
+}
+
+
+.shopMotivationCard p {
+  margin: 0 0 12px;
+  color: var(--cream);
+  font-size: clamp(
+    22px,
+    4vw,
+    34px
+  );
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+
+.shopMotivationCard strong {
+  display: block;
+  color: var(--light-gold);
+  font-family: Georgia, serif;
+  font-size: clamp(
+    27px,
+    5vw,
+    43px
+  );
+  letter-spacing: 3px;
+}
+
+
+@keyframes shopOverlayFade {
+  from {
+    opacity: 0;
+  }
+
+
+  to {
+    opacity: 1;
+  }
+}
+
+
+@keyframes shopCardRise {
+  from {
+    opacity: 0;
+    transform:
+      translateY(20px)
+      scale(0.97);
+  }
+
+
+  to {
+    opacity: 1;
+    transform:
+      translateY(0)
+      scale(1);
+  }
+}
+
+
+@media (max-width: 560px) {
+  .shopMotivationCard {
+    padding:
+      38px 20px;
+  }
+
+
+  .shopMotivationCard p,
+  .shopMotivationCard strong {
+    letter-spacing: 2px;
   }
 }

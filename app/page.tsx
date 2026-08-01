@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import {
+  FormEvent,
   useEffect,
   useState,
 } from "react";
@@ -48,6 +49,18 @@ export default function Home() {
 
   const [cartCount, setCartCount] =
     useState(0);
+
+
+  const [
+    contactMessage,
+    setContactMessage,
+  ] = useState("");
+
+
+  const [
+    showShopMessage,
+    setShowShopMessage,
+  ] = useState(false);
 
 
   useEffect(() => {
@@ -132,6 +145,91 @@ export default function Home() {
 
   function closeMenu() {
     setMenuOpen(false);
+  }
+
+
+  function handleShopClick() {
+    setShowShopMessage(true);
+
+
+    window.setTimeout(() => {
+      document
+        .getElementById("products")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+
+
+      setShowShopMessage(false);
+    }, 1500);
+  }
+
+
+  function handleContactSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+
+    const name = String(
+      formData.get("name") || ""
+    ).trim();
+
+
+    const email = String(
+      formData.get("email") || ""
+    ).trim();
+
+
+    const subject = String(
+      formData.get("subject") || ""
+    ).trim();
+
+
+    const message = String(
+      formData.get("message") || ""
+    ).trim();
+
+
+    if (
+      !name ||
+      !email ||
+      !subject ||
+      !message
+    ) {
+      setContactMessage(
+        "Please complete every field."
+      );
+
+
+      return;
+    }
+
+
+    const emailSubject =
+      encodeURIComponent(
+        `Allen Motion Co. Contact: ${subject}`
+      );
+
+
+    const emailBody =
+      encodeURIComponent(
+        `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+      );
+
+
+    window.location.href =
+      `mailto:ascendco25@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+
+
+    setContactMessage(
+      "Your email app should open with the message prepared."
+    );
   }
 
 
@@ -299,12 +397,13 @@ export default function Home() {
           </p>
 
 
-          <a
-            href="#products"
+          <button
+            type="button"
             className="heroVideoButton"
+            onClick={handleShopClick}
           >
             SHOP COLLECTION
-          </a>
+          </button>
         </div>
 
 
@@ -409,10 +508,10 @@ export default function Home() {
 
         <p>
           Allen Motion Co. represents
-          faith, discipline, purpose, and
-          growth. ASCEND was created for
-          people who keep moving—even when
-          doubt tells them to stop.
+          Faith, Discipline, Purpose, and
+          Growth. ASCEND was created for
+          people who keep moving..even when
+          doubt tells them to stop. Unleast that dog.
         </p>
       </section>
 
@@ -433,7 +532,7 @@ export default function Home() {
 
         <p>
           Founded by college sprinter and
-          creator DK Allen, Allen Motion
+          creator D'Kirian Allen, Allen Motion
           Co. blends athletics, purpose,
           and streetwear into clothing
           designed to mean something.
@@ -441,7 +540,107 @@ export default function Home() {
       </section>
 
 
-      <footer id="contact">
+      <section
+        className="contactSection"
+        id="contact"
+      >
+        <div className="contactHeading">
+          <p className="sectionLabel">
+            GET IN TOUCH
+          </p>
+
+
+          <h2>CONTACT</h2>
+
+
+          <div className="contactLine" />
+
+
+          <p>
+            Questions about an order,
+            sizing, shipping, or the
+            ASCEND collection? Send a
+            message below.
+          </p>
+        </div>
+
+
+        <form
+          className="contactForm"
+          onSubmit={handleContactSubmit}
+        >
+          <label htmlFor="contactName">
+            Name
+          </label>
+
+
+          <input
+            id="contactName"
+            name="name"
+            type="text"
+            autoComplete="name"
+            required
+          />
+
+
+          <label htmlFor="contactEmail">
+            Email
+          </label>
+
+
+          <input
+            id="contactEmail"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+          />
+
+
+          <label htmlFor="contactSubject">
+            Subject
+          </label>
+
+
+          <input
+            id="contactSubject"
+            name="subject"
+            type="text"
+            required
+          />
+
+
+          <label htmlFor="contactMessage">
+            Message
+          </label>
+
+
+          <textarea
+            id="contactMessage"
+            name="message"
+            rows={8}
+            required
+          />
+
+
+          <button type="submit">
+            SEND MESSAGE
+          </button>
+
+
+          {contactMessage && (
+            <p
+              className="contactFormMessage"
+              aria-live="polite"
+            >
+              {contactMessage}
+            </p>
+          )}
+        </form>
+      </section>
+
+
+      <footer className="siteFooter">
         <div>
           <strong>
             ALLEN MOTION CO.
@@ -456,8 +655,8 @@ export default function Home() {
 
 
         <div>
-          <a href="mailto:dkiranallen@gmail.com">
-            dkiranallen@gmail.com
+          <a href="mailto:ascendco25@gmail.com">
+            ascendco25@gmail.com
           </a>
 
 
@@ -466,6 +665,26 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+
+      {showShopMessage && (
+        <div
+          className="shopMotivationOverlay"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="shopMotivationCard">
+            <p>
+              WEAR THE MINDSET.
+            </p>
+
+
+            <strong>
+              LIVE THE MESSAGE.
+            </strong>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
