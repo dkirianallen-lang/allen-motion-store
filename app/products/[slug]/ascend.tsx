@@ -34,7 +34,7 @@ const products: Record<string, Product> = {
   gray: {
     name: "ASCEND TRACK GRAPHIC TEE — VINTAGE GRAY",
     shortName: "Vintage Gray",
-    price: 49.99,
+    price: 39.99,
     frontImage: "/gray-shirt.png",
     backImage: "/gray-shirt-back.png",
     color: "Vintage Gray",
@@ -44,7 +44,7 @@ const products: Record<string, Product> = {
   black: {
     name: "ASCEND TRACK GRAPHIC TEE — VINTAGE BLACK",
     shortName: "Vintage Black",
-    price: 49.99,
+    price: 39.99,
     frontImage: "/black-shirt.png",
     backImage: "/black-shirt-back.png",
     color: "Vintage Black",
@@ -54,7 +54,7 @@ const products: Record<string, Product> = {
   cream: {
     name: "ASCEND TRACK GRAPHIC TEE — CREAM",
     shortName: "Cream",
-    price: 49.99,
+    price: 39.99,
     frontImage: "/cream-shirt.png",
     backImage: "/cream-shirt-back.png",
     color: "Cream",
@@ -638,7 +638,8 @@ export default function ProductPage() {
               inventory.length === 0
             }
           >
-            ADD TO CART — $49.99
+            ADD TO CART — $
+            {product.price.toFixed(2)}
           </button>
 
 
