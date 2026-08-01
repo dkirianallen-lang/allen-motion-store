@@ -229,7 +229,9 @@ export default function Home() {
 
 
       <nav className="desktopNav">
-        <a href="#products">Products</a>
+        <a href="#products">
+          Products
+        </a>
 
 
         <a href="#mission">
@@ -253,66 +255,60 @@ export default function Home() {
       </nav>
 
 
-      <section className="hero">
-        <div className="track trackOne" />
-        <div className="track trackTwo" />
-        <div className="track trackThree" />
+      <section className="videoHero">
+        <video
+          className="heroBackgroundVideo"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        >
+          <source
+            src="/ascend-hero.mp4"
+            type="video/mp4"
+          />
+        </video>
 
 
-        <div className="runner">
-          🏃🏾‍♂️
-        </div>
+        <div className="heroVideoOverlay" />
 
 
-        <div className="heroContent">
-          <p className="eyebrow">
+        <div className="heroVideoContent">
+          <p className="heroVideoEyebrow">
             ALLEN MOTION CO. PRESENTS
           </p>
 
 
-          <h2>ASCEND</h2>
+          <h1>ASCEND</h1>
 
 
-          <h3>
+          <h2>
             BUILT FOR THOSE WHO KEEP
             GOING.
-          </h3>
+          </h2>
 
 
-          <div className="goldLine" />
+          <div className="heroVideoLine" />
 
 
-          <p className="heroText">
-            From doubt to discipline. From
-            pressure to purpose.
+          <p className="heroVideoText">
+            From doubt to discipline.
+            From pressure to purpose.
           </p>
 
 
           <a
             href="#products"
-            className="shopButton"
+            className="heroVideoButton"
           >
             SHOP COLLECTION
           </a>
         </div>
 
 
-        <div className="heroShirt">
-          <div className="shirtShape">
-            <span>ASCEND</span>
-
-
-            <small>EST. 2026</small>
-
-
-            <div className="shirtGraphic">
-              ◎
-            </div>
-
-
-            <p>BUILT DIFFERENT</p>
-          </div>
-        </div>
+        <div className="heroBottomFade" />
       </section>
 
 
@@ -430,7 +426,9 @@ export default function Home() {
         </p>
 
 
-        <h2>BUILT FROM A REAL STORY.</h2>
+        <h2>
+          BUILT FROM A REAL STORY.
+        </h2>
 
 
         <p>
