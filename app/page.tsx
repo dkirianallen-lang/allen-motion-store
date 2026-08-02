@@ -14,6 +14,13 @@ type StoredCartItem = {
 };
 
 
+type NewsletterResponse = {
+  success?: boolean;
+  message?: string;
+  error?: string;
+};
+
+
 const products = [
   {
     id: 1,
@@ -60,6 +67,30 @@ export default function Home() {
   const [
     showShopMessage,
     setShowShopMessage,
+  ] = useState(false);
+
+
+  const [
+    newsletterEmail,
+    setNewsletterEmail,
+  ] = useState("");
+
+
+  const [
+    newsletterMessage,
+    setNewsletterMessage,
+  ] = useState("");
+
+
+  const [
+    newsletterSuccess,
+    setNewsletterSuccess,
+  ] = useState(false);
+
+
+  const [
+    newsletterLoading,
+    setNewsletterLoading,
   ] = useState(false);
 
 
@@ -163,6 +194,125 @@ export default function Home() {
 
       setShowShopMessage(false);
     }, 1500);
+  }
+
+
+  async function handleNewsletterSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+
+
+    setNewsletterMessage("");
+    setNewsletterSuccess(false);
+
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+
+    const email = String(
+      formData.get("newsletterEmail") || ""
+    )
+      .trim()
+      .toLowerCase();
+
+
+    const website = String(
+      formData.get("website") || ""
+    ).trim();
+
+
+    if (!email) {
+      setNewsletterMessage(
+        "Please enter your email address."
+      );
+
+
+      return;
+    }
+
+
+    setNewsletterLoading(true);
+
+
+    try {
+      const response = await fetch(
+        "/api/newsletter/subscribe",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            website,
+          }),
+        }
+      );
+
+
+      const responseText =
+        await response.text();
+
+
+      let data: NewsletterResponse = {};
+
+
+      if (responseText) {
+        try {
+          data = JSON.parse(
+            responseText
+          ) as NewsletterResponse;
+        } catch {
+          data = {
+            success: false,
+            error:
+              "The server returned an unreadable response.",
+          };
+        }
+      }
+
+
+      if (
+        !response.ok ||
+        data.success === false
+      ) {
+        setNewsletterMessage(
+          data.error ||
+            "We could not save your email. Please try again."
+        );
+
+
+        return;
+      }
+
+
+      setNewsletterSuccess(true);
+
+
+      setNewsletterMessage(
+        data.message ||
+          "Welcome to the movement."
+      );
+
+
+      setNewsletterEmail("");
+      form.reset();
+    } catch (error) {
+      console.error(
+        "Newsletter form error:",
+        error
+      );
+
+
+      setNewsletterMessage(
+        "Something went wrong. Please try again."
+      );
+    } finally {
+      setNewsletterLoading(false);
+    }
   }
 
 
@@ -309,6 +459,14 @@ export default function Home() {
 
 
           <a
+            href="#movement"
+            onClick={closeMenu}
+          >
+            Join the Movement
+          </a>
+
+
+          <a
             href="#contact"
             onClick={closeMenu}
           >
@@ -339,6 +497,11 @@ export default function Home() {
 
         <a href="#owner">
           About Owner
+        </a>
+
+
+        <a href="#movement">
+          Join the Movement
         </a>
 
 
@@ -510,8 +673,9 @@ export default function Home() {
           Allen Motion Co. represents
           Faith, Discipline, Purpose, and
           Growth. ASCEND was created for
-          people who keep moving..even when
-          doubt tells them to stop. Unleast that dog.
+          people who keep moving—even when
+          doubt tells them to stop. Unleash
+          that dog.
         </p>
       </section>
 
@@ -532,11 +696,128 @@ export default function Home() {
 
         <p>
           Founded by college sprinter and
-          creator D&apos;Kirian Allen, Allen Motion
-          Co. blends athletics, purpose,
-          and streetwear into clothing
+          creator D&apos;Kirian Allen,
+          Allen Motion Co. blends
+          athletics, purpose, and
+          streetwear into clothing
           designed to mean something.
         </p>
+      </section>
+
+
+      <section
+        className="newsletterSection"
+        id="movement"
+      >
+        <div className="newsletterContent">
+          <p className="sectionLabel">
+            STAY CONNECTED
+          </p>
+
+
+          <h2>JOIN THE MOVEMENT</h2>
+
+
+          <div className="newsletterLine" />
+
+
+          <p className="newsletterDescription">
+            Be the first to know about new
+            drops, exclusive releases, and
+            behind-the-scenes updates.
+          </p>
+
+
+          <form
+            className="newsletterForm"
+            onSubmit={
+              handleNewsletterSubmit
+            }
+          >
+            <label
+              htmlFor="newsletterEmail"
+              className="newsletterLabel"
+            >
+              Email address
+            </label>
+
+
+            <div className="newsletterFormRow">
+              <input
+                id="newsletterEmail"
+                name="newsletterEmail"
+                type="email"
+                value={newsletterEmail}
+                onChange={(event) => {
+                  setNewsletterEmail(
+                    event.target.value
+                  );
+
+
+                  setNewsletterMessage("");
+                  setNewsletterSuccess(
+                    false
+                  );
+                }}
+                placeholder="Enter your email"
+                autoComplete="email"
+                required
+              />
+
+
+              <button
+                type="submit"
+                disabled={
+                  newsletterLoading
+                }
+              >
+                {newsletterLoading
+                  ? "JOINING..."
+                  : "JOIN"}
+              </button>
+            </div>
+
+
+            <div
+              className="newsletterHoneypot"
+              aria-hidden="true"
+            >
+              <label htmlFor="website">
+                Website
+              </label>
+
+
+              <input
+                id="website"
+                name="website"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+              />
+            </div>
+
+
+            {newsletterMessage && (
+              <p
+                className={
+                  newsletterSuccess
+                    ? "newsletterMessage newsletterMessageSuccess"
+                    : "newsletterMessage newsletterMessageError"
+                }
+                aria-live="polite"
+              >
+                {newsletterMessage}
+              </p>
+            )}
+          </form>
+
+
+          <p className="newsletterPrivacy">
+            By joining, you agree to receive
+            Allen Motion Co. updates. You
+            can unsubscribe anytime.
+          </p>
+        </div>
       </section>
 
 
