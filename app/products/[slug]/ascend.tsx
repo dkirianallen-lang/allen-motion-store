@@ -655,9 +655,10 @@ export default function ProductPage() {
 
 
             <p>
-              $9.99 U.S. shipping.
-              Tracking will be provided
-              when your order ships.
+              $9.99 U.S. shipping. Please allow
+              7–15 business days for delivery.
+              Tracking will be provided when
+              your order ships.
             </p>
           </div>
         </div>
