@@ -1,15 +1,22 @@
-import { createClient as createAdminClient } from "@supabase/supabase-js";
+import {
+  createClient as createAdminClient,
+} from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 
 
-import { createClient as createAuthClient } from "@/lib/supabase/server";
-import { markOrderFulfilled } from "../actions/actions";
+import {
+  createClient as createAuthClient,
+} from "@/lib/supabase/server";
+import {
+  markOrderFulfilled,
+} from "../actions/actions";
 import { logout } from "../login/actions";
 import CopyOrderButton from "./CopyOrderButton";
 
 
 const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL;
+  process.env
+    .NEXT_PUBLIC_SUPABASE_URL;
 
 
 const supabaseSecretKey =
@@ -23,17 +30,18 @@ if (!supabaseUrl || !supabaseSecretKey) {
 }
 
 
-const supabaseAdmin = createAdminClient(
-  supabaseUrl,
-  supabaseSecretKey,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false,
-    },
-  }
-);
+const supabaseAdmin =
+  createAdminClient(
+    supabaseUrl,
+    supabaseSecretKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+        detectSessionInUrl: false,
+      },
+    }
+  );
 
 
 type OrderItem = {
@@ -49,6 +57,7 @@ type Order = {
   paypal_order_id: string;
   customer_email: string | null;
   customer_name: string | null;
+  customer_phone: string | null;
   address_line_1: string | null;
   address_line_2: string | null;
   city: string | null;
@@ -69,7 +78,8 @@ type OrdersPageProps = {
 };
 
 
-export const dynamic = "force-dynamic";
+export const dynamic =
+  "force-dynamic";
 
 
 export default async function OrdersPage({
@@ -80,7 +90,8 @@ export default async function OrdersPage({
 
 
   const originalSearch =
-    resolvedSearchParams.search?.trim() || "";
+    resolvedSearchParams.search?.trim() ||
+    "";
 
 
   const search =
@@ -93,7 +104,8 @@ export default async function OrdersPage({
 
   const {
     data: { user },
-  } = await supabaseAuth.auth.getUser();
+  } =
+    await supabaseAuth.auth.getUser();
 
 
   const adminEmail =
@@ -132,7 +144,8 @@ export default async function OrdersPage({
           background: "#111",
           color: "#f5eadf",
           padding: "40px",
-          fontFamily: "Arial, sans-serif",
+          fontFamily:
+            "Arial, sans-serif",
         }}
       >
         <div
@@ -142,7 +155,8 @@ export default async function OrdersPage({
           }}
         >
           <h1>
-            Orders could not be loaded.
+            Orders could not be
+            loaded.
           </h1>
 
 
@@ -183,6 +197,7 @@ export default async function OrdersPage({
           `order #${order.id}`,
           order.customer_name,
           order.customer_email,
+          order.customer_phone,
           order.paypal_order_id,
         ]
           .filter(Boolean)
@@ -190,33 +205,40 @@ export default async function OrdersPage({
           .toLowerCase();
 
 
-        return searchableText.includes(search);
+        return searchableText.includes(
+          search
+        );
       })
     : allOrders;
 
 
-  const totalOrders = allOrders.length;
+  const totalOrders =
+    allOrders.length;
 
 
-  const totalRevenue = allOrders.reduce(
-    (sum, order) =>
-      sum + Number(order.total || 0),
-    0
-  );
+  const totalRevenue =
+    allOrders.reduce(
+      (sum, order) =>
+        sum +
+        Number(order.total || 0),
+      0
+    );
 
 
-  const newOrders = allOrders.filter(
-    (order) =>
-      order.fulfillment_status !==
-      "fulfilled"
-  ).length;
+  const newOrders =
+    allOrders.filter(
+      (order) =>
+        order.fulfillment_status !==
+        "fulfilled"
+    ).length;
 
 
-  const fulfilledOrders = allOrders.filter(
-    (order) =>
-      order.fulfillment_status ===
-      "fulfilled"
-  ).length;
+  const fulfilledOrders =
+    allOrders.filter(
+      (order) =>
+        order.fulfillment_status ===
+        "fulfilled"
+    ).length;
 
 
   return (
@@ -226,7 +248,8 @@ export default async function OrdersPage({
         background: "#111",
         color: "#f5eadf",
         padding: "40px",
-        fontFamily: "Arial, sans-serif",
+        fontFamily:
+          "Arial, sans-serif",
       }}
     >
       <div
@@ -239,7 +262,8 @@ export default async function OrdersPage({
           style={{
             display: "flex",
             alignItems: "flex-start",
-            justifyContent: "space-between",
+            justifyContent:
+              "space-between",
             gap: "24px",
             flexWrap: "wrap",
             marginBottom: "40px",
@@ -249,7 +273,8 @@ export default async function OrdersPage({
             <p
               style={{
                 color: "#c79a55",
-                letterSpacing: "0.18em",
+                letterSpacing:
+                  "0.18em",
                 fontWeight: 700,
                 marginTop: 0,
               }}
@@ -275,9 +300,9 @@ export default async function OrdersPage({
                 margin: 0,
               }}
             >
-              View customer orders and copy
-              the shipping information for
-              Jean.
+              View customer orders and
+              copy the shipping
+              information for Jean.
             </p>
 
 
@@ -288,7 +313,8 @@ export default async function OrdersPage({
                 marginTop: "10px",
               }}
             >
-              Signed in as {signedInEmail}
+              Signed in as{" "}
+              {signedInEmail}
             </p>
           </div>
 
@@ -298,12 +324,14 @@ export default async function OrdersPage({
               type="submit"
               style={{
                 padding: "13px 22px",
-                background: "transparent",
+                background:
+                  "transparent",
                 color: "#f5eadf",
                 border:
                   "1px solid #c79a55",
                 fontWeight: 800,
-                letterSpacing: "0.08em",
+                letterSpacing:
+                  "0.08em",
                 cursor: "pointer",
               }}
             >
@@ -324,7 +352,8 @@ export default async function OrdersPage({
         >
           <article
             style={{
-              border: "1px solid #5a4632",
+              border:
+                "1px solid #5a4632",
               background: "#171717",
               padding: "24px",
             }}
@@ -336,7 +365,8 @@ export default async function OrdersPage({
                 marginBottom: "10px",
                 fontSize: "13px",
                 fontWeight: 700,
-                letterSpacing: "0.12em",
+                letterSpacing:
+                  "0.12em",
               }}
             >
               TOTAL REVENUE
@@ -350,14 +380,16 @@ export default async function OrdersPage({
                 fontSize: "32px",
               }}
             >
-              ${totalRevenue.toFixed(2)}
+              $
+              {totalRevenue.toFixed(2)}
             </h2>
           </article>
 
 
           <article
             style={{
-              border: "1px solid #5a4632",
+              border:
+                "1px solid #5a4632",
               background: "#171717",
               padding: "24px",
             }}
@@ -369,7 +401,8 @@ export default async function OrdersPage({
                 marginBottom: "10px",
                 fontSize: "13px",
                 fontWeight: 700,
-                letterSpacing: "0.12em",
+                letterSpacing:
+                  "0.12em",
               }}
             >
               TOTAL ORDERS
@@ -389,7 +422,8 @@ export default async function OrdersPage({
 
           <article
             style={{
-              border: "1px solid #5a4632",
+              border:
+                "1px solid #5a4632",
               background: "#171717",
               padding: "24px",
             }}
@@ -401,7 +435,8 @@ export default async function OrdersPage({
                 marginBottom: "10px",
                 fontSize: "13px",
                 fontWeight: 700,
-                letterSpacing: "0.12em",
+                letterSpacing:
+                  "0.12em",
               }}
             >
               NEW ORDERS
@@ -422,7 +457,8 @@ export default async function OrdersPage({
 
           <article
             style={{
-              border: "1px solid #5a4632",
+              border:
+                "1px solid #5a4632",
               background: "#171717",
               padding: "24px",
             }}
@@ -434,7 +470,8 @@ export default async function OrdersPage({
                 marginBottom: "10px",
                 fontSize: "13px",
                 fontWeight: 700,
-                letterSpacing: "0.12em",
+                letterSpacing:
+                  "0.12em",
               }}
             >
               FULFILLED
@@ -467,8 +504,10 @@ export default async function OrdersPage({
           <input
             type="search"
             name="search"
-            defaultValue={originalSearch}
-            placeholder="Search name, email, PayPal ID, or order number"
+            defaultValue={
+              originalSearch
+            }
+            placeholder="Search name, email, phone, PayPal ID, or order number"
             aria-label="Search orders"
             style={{
               flex: "1 1 320px",
@@ -503,9 +542,11 @@ export default async function OrdersPage({
             <a
               href="/admin/orders"
               style={{
-                display: "inline-flex",
+                display:
+                  "inline-flex",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent:
+                  "center",
                 padding: "14px 22px",
                 color: "#f5eadf",
                 border:
@@ -529,8 +570,10 @@ export default async function OrdersPage({
             }}
           >
             {orders.length} result
-            {orders.length === 1 ? "" : "s"} for
-            “{originalSearch}”
+            {orders.length === 1
+              ? ""
+              : "s"}{" "}
+            for “{originalSearch}”
           </p>
         )}
 
@@ -538,7 +581,8 @@ export default async function OrdersPage({
         {orders.length === 0 ? (
           <div
             style={{
-              border: "1px solid #5a4632",
+              border:
+                "1px solid #5a4632",
               padding: "28px",
               background: "#171717",
             }}
@@ -567,7 +611,8 @@ export default async function OrdersPage({
                     border:
                       "1px solid #5a4632",
                     padding: "28px",
-                    background: "#171717",
+                    background:
+                      "#171717",
                   }}
                 >
                   <div
@@ -577,19 +622,23 @@ export default async function OrdersPage({
                         "space-between",
                       gap: "20px",
                       flexWrap: "wrap",
-                      marginBottom: "24px",
+                      marginBottom:
+                        "24px",
                     }}
                   >
                     <div>
                       <p
                         style={{
-                          color: "#c79a55",
+                          color:
+                            "#c79a55",
                           marginTop: 0,
-                          marginBottom: "6px",
+                          marginBottom:
+                            "6px",
                           fontWeight: 700,
                         }}
                       >
-                        ORDER #{order.id}
+                        ORDER #
+                        {order.id}
                       </p>
 
 
@@ -607,6 +656,15 @@ export default async function OrdersPage({
                         {order.customer_email ||
                           "No email saved"}
                       </p>
+
+
+                      <p>
+                        <strong>
+                          Phone:
+                        </strong>{" "}
+                        {order.customer_phone ||
+                          "No phone number saved"}
+                      </p>
                     </div>
 
 
@@ -617,7 +675,8 @@ export default async function OrdersPage({
                     >
                       <p
                         style={{
-                          fontSize: "24px",
+                          fontSize:
+                            "24px",
                           fontWeight: 700,
                           margin: 0,
                         }}
@@ -640,11 +699,13 @@ export default async function OrdersPage({
                         style={{
                           textTransform:
                             "capitalize",
-                          color: isFulfilled
-                            ? "#8fcf9a"
-                            : "#c79a55",
+                          color:
+                            isFulfilled
+                              ? "#8fcf9a"
+                              : "#c79a55",
                           fontWeight: 700,
-                          marginBottom: "10px",
+                          marginBottom:
+                            "10px",
                         }}
                       >
                         {order.fulfillment_status ||
@@ -661,7 +722,9 @@ export default async function OrdersPage({
                           <input
                             type="hidden"
                             name="orderId"
-                            value={order.id}
+                            value={
+                              order.id
+                            }
                           />
 
 
@@ -672,10 +735,13 @@ export default async function OrdersPage({
                                 "11px 16px",
                               background:
                                 "#c79a55",
-                              color: "#111",
+                              color:
+                                "#111",
                               border: 0,
-                              fontWeight: 800,
-                              cursor: "pointer",
+                              fontWeight:
+                                800,
+                              cursor:
+                                "pointer",
                             }}
                           >
                             MARK FULFILLED
@@ -698,9 +764,13 @@ export default async function OrdersPage({
                       <h3>Items</h3>
 
 
-                      {order.items?.length ? (
+                      {order.items
+                        ?.length ? (
                         order.items.map(
-                          (item, index) => (
+                          (
+                            item,
+                            index
+                          ) => (
                             <div
                               key={`${item.slug}-${item.size}-${index}`}
                               style={{
@@ -721,7 +791,8 @@ export default async function OrdersPage({
 
                               <p
                                 style={{
-                                  margin: "4px 0",
+                                  margin:
+                                    "4px 0",
                                 }}
                               >
                                 Size:{" "}
@@ -732,7 +803,8 @@ export default async function OrdersPage({
 
                               <p
                                 style={{
-                                  margin: "4px 0",
+                                  margin:
+                                    "4px 0",
                                 }}
                               >
                                 Quantity:{" "}
@@ -752,11 +824,45 @@ export default async function OrdersPage({
 
                     <section>
                       <h3>
-                        Shipping address
+                        Shipping information
                       </h3>
 
 
                       <p>
+                        <strong>
+                          Customer:
+                        </strong>
+                        <br />
+                        {order.customer_name ||
+                          "Customer"}
+                      </p>
+
+
+                      <p>
+                        <strong>
+                          Email:
+                        </strong>
+                        <br />
+                        {order.customer_email ||
+                          "No email saved"}
+                      </p>
+
+
+                      <p>
+                        <strong>
+                          Phone number:
+                        </strong>
+                        <br />
+                        {order.customer_phone ||
+                          "No phone number saved"}
+                      </p>
+
+
+                      <p>
+                        <strong>
+                          Address:
+                        </strong>
+                        <br />
                         {order.address_line_1 ||
                           "No address saved"}
                       </p>
@@ -795,6 +901,9 @@ export default async function OrdersPage({
                         customerEmail={
                           order.customer_email
                         }
+                        customerPhone={
+                          order.customer_phone
+                        }
                         addressLine1={
                           order.address_line_1
                         }
@@ -809,7 +918,9 @@ export default async function OrdersPage({
                         countryCode={
                           order.country_code
                         }
-                        items={order.items}
+                        items={
+                          order.items
+                        }
                       />
                     </section>
 

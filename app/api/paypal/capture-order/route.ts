@@ -1,4 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
+import {
+  createClient,
+} from "@supabase/supabase-js";
 import { Resend } from "resend";
 import {
   NextRequest,
@@ -12,7 +14,8 @@ const paypalBase =
 
 
 const clientId =
-  process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  process.env
+    .NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
 
 const clientSecret =
@@ -20,7 +23,8 @@ const clientSecret =
 
 
 const supabaseUrl =
-  process.env.NEXT_PUBLIC_SUPABASE_URL;
+  process.env
+    .NEXT_PUBLIC_SUPABASE_URL;
 
 
 const supabaseSecretKey =
@@ -36,7 +40,8 @@ const orderNotificationEmail =
 
 
 const customerEmailTestMode =
-  process.env.CUSTOMER_EMAIL_TEST_MODE ===
+  process.env
+    .CUSTOMER_EMAIL_TEST_MODE ===
   "true";
 
 
@@ -140,7 +145,10 @@ type PayPalCaptureResponse = {
 };
 
 
-const productNames: Record<string, string> = {
+const productNames: Record<
+  string,
+  string
+> = {
   black:
     "ASCEND Track Graphic Tee — Vintage Black",
 
@@ -174,13 +182,17 @@ async function getAccessToken() {
 
 
       headers: {
-        Authorization: `Basic ${auth}`,
+        Authorization:
+          `Basic ${auth}`,
+
+
         "Content-Type":
           "application/x-www-form-urlencoded",
       },
 
 
-      body: "grant_type=client_credentials",
+      body:
+        "grant_type=client_credentials",
 
 
       cache: "no-store",
@@ -199,7 +211,9 @@ async function getAccessToken() {
   }
 
 
-  const data = JSON.parse(responseText);
+  const data = JSON.parse(
+    responseText
+  );
 
 
   return data.access_token as string;
@@ -223,7 +237,9 @@ function combineName(
 }
 
 
-function escapeHtml(value: unknown) {
+function escapeHtml(
+  value: unknown
+) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
@@ -233,7 +249,9 @@ function escapeHtml(value: unknown) {
 }
 
 
-function buildItemRows(cart: CartItem[]) {
+function buildItemRows(
+  cart: CartItem[]
+) {
   return cart
     .map((item) => {
       const productName =
@@ -283,17 +301,32 @@ export async function POST(
   request: NextRequest
 ) {
   try {
-    const body = await request.json();
+    const body =
+      await request.json();
 
 
-    const orderID = body.orderID as
-      | string
-      | undefined;
+    const orderID =
+      body.orderID as
+        | string
+        | undefined;
 
 
-    const cart = body.cart as
-      | CartItem[]
-      | undefined;
+    const cart =
+      body.cart as
+        | CartItem[]
+        | undefined;
+
+
+    const customerPhone = String(
+      body.customerPhone || ""
+    ).trim();
+
+
+    const customerPhoneDigits =
+      customerPhone.replace(
+        /\D/g,
+        ""
+      );
 
 
     if (!orderID) {
@@ -301,6 +334,19 @@ export async function POST(
         {
           error:
             "Missing PayPal order ID.",
+        },
+        { status: 400 }
+      );
+    }
+
+
+    if (
+      customerPhoneDigits.length < 10
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "A valid customer phone number is required.",
         },
         { status: 400 }
       );
@@ -325,7 +371,9 @@ export async function POST(
       if (
         !item.slug ||
         !item.size ||
-        !Number.isInteger(item.quantity) ||
+        !Number.isInteger(
+          item.quantity
+        ) ||
         item.quantity < 1
       ) {
         return NextResponse.json(
@@ -372,8 +420,8 @@ export async function POST(
       await response.text();
 
 
-    let paypalData: PayPalCaptureResponse =
-      {};
+    let paypalData:
+      PayPalCaptureResponse = {};
 
 
     if (responseText) {
@@ -404,7 +452,10 @@ export async function POST(
 
           paypal: paypalData,
         },
-        { status: response.status }
+        {
+          status:
+            response.status,
+        }
       );
     }
 
@@ -418,7 +469,10 @@ export async function POST(
         ?.captures?.[0];
 
 
-    if (capture?.status !== "COMPLETED") {
+    if (
+      capture?.status !==
+      "COMPLETED"
+    ) {
       return NextResponse.json(
         {
           error:
@@ -436,12 +490,14 @@ export async function POST(
 
 
     const paypalSource =
-      paypalData.payment_source?.paypal;
+      paypalData.payment_source
+        ?.paypal;
 
 
     const customerEmail =
       paypalSource?.email_address ||
-      paypalData.payer?.email_address ||
+      paypalData.payer
+        ?.email_address ||
       null;
 
 
@@ -449,17 +505,22 @@ export async function POST(
       purchaseUnit?.shipping?.name
         ?.full_name ||
       combineName(
-        paypalSource?.name?.given_name,
-        paypalSource?.name?.surname
+        paypalSource?.name
+          ?.given_name,
+        paypalSource?.name
+          ?.surname
       ) ||
       combineName(
-        paypalData.payer?.name?.given_name,
-        paypalData.payer?.name?.surname
+        paypalData.payer?.name
+          ?.given_name,
+        paypalData.payer?.name
+          ?.surname
       );
 
 
     const shippingAddress =
-      purchaseUnit?.shipping?.address;
+      purchaseUnit?.shipping
+        ?.address;
 
 
     const totalValue =
@@ -467,7 +528,8 @@ export async function POST(
       purchaseUnit?.amount?.value;
 
 
-    const total = Number(totalValue);
+    const total =
+      Number(totalValue);
 
 
     if (
@@ -480,57 +542,67 @@ export async function POST(
     }
 
 
-    const { error: databaseError } =
-      await supabaseAdmin.rpc(
-        "complete_paid_order_with_shipping",
-        {
-          p_paypal_order_id: orderID,
+    const {
+      error: databaseError,
+    } = await supabaseAdmin.rpc(
+      "complete_paid_order_with_shipping",
+      {
+        p_paypal_order_id:
+          orderID,
 
 
-          p_customer_email:
-            customerEmail,
+        p_customer_email:
+          customerEmail,
 
 
-          p_customer_name:
-            customerName,
+        p_customer_name:
+          customerName,
 
 
-          p_address_line_1:
-            shippingAddress
-              ?.address_line_1 || null,
+        p_address_line_1:
+          shippingAddress
+            ?.address_line_1 ||
+          null,
 
 
-          p_address_line_2:
-            shippingAddress
-              ?.address_line_2 || null,
+        p_address_line_2:
+          shippingAddress
+            ?.address_line_2 ||
+          null,
 
 
-          p_city:
-            shippingAddress
-              ?.admin_area_2 || null,
+        p_city:
+          shippingAddress
+            ?.admin_area_2 ||
+          null,
 
 
-          p_state:
-            shippingAddress
-              ?.admin_area_1 || null,
+        p_state:
+          shippingAddress
+            ?.admin_area_1 ||
+          null,
 
 
-          p_postal_code:
-            shippingAddress
-              ?.postal_code || null,
+        p_postal_code:
+          shippingAddress
+            ?.postal_code ||
+          null,
 
 
-          p_country_code:
-            shippingAddress
-              ?.country_code || null,
+        p_country_code:
+          shippingAddress
+            ?.country_code ||
+          null,
 
 
-          p_total: total,
+        p_total:
+          total,
 
 
-          p_items: cart,
-        }
-      );
+        p_items:
+          cart,
+      }
+    );
 
 
     if (databaseError) {
@@ -546,14 +618,44 @@ export async function POST(
     }
 
 
+    const {
+      error: phoneSaveError,
+    } = await supabaseAdmin
+      .from("orders")
+      .update({
+        customer_phone:
+          customerPhone,
+      })
+      .eq(
+        "paypal_order_id",
+        orderID
+      );
+
+
+    if (phoneSaveError) {
+      console.error(
+        "Customer phone save error:",
+        phoneSaveError
+      );
+
+
+      throw new Error(
+        `Payment completed, but the customer phone number could not be saved: ${phoneSaveError.message}`
+      );
+    }
+
+
     const itemRows =
       buildItemRows(cart);
 
 
     const cityStatePostal = [
-      shippingAddress?.admin_area_2,
-      shippingAddress?.admin_area_1,
-      shippingAddress?.postal_code,
+      shippingAddress
+        ?.admin_area_2,
+      shippingAddress
+        ?.admin_area_1,
+      shippingAddress
+        ?.postal_code,
     ]
       .filter(Boolean)
       .join(", ");
@@ -574,7 +676,9 @@ export async function POST(
           "Allen Motion Store <orders@allenmotion.vip>",
 
 
-        to: [orderNotificationEmail],
+        to: [
+          orderNotificationEmail,
+        ],
 
 
         subject:
@@ -611,13 +715,22 @@ export async function POST(
               </p>
 
 
-              <h1 style="margin-bottom:8px;">
+              <h1
+                style="
+                  margin-bottom:8px;
+                "
+              >
                 New paid order
               </h1>
 
 
-              <p style="margin-bottom:0;">
-                A customer completed checkout.
+              <p
+                style="
+                  margin-bottom:0;
+                "
+              >
+                A customer completed
+                checkout.
               </p>
             </div>
 
@@ -629,11 +742,15 @@ export async function POST(
                 padding:28px;
               "
             >
-              <h2>Order information</h2>
+              <h2>
+                Order information
+              </h2>
 
 
               <p>
-                <strong>PayPal order ID:</strong>
+                <strong>
+                  PayPal order ID:
+                </strong>
                 <br />
 
 
@@ -642,7 +759,9 @@ export async function POST(
 
 
               <p>
-                <strong>Total paid:</strong>
+                <strong>
+                  Total paid:
+                </strong>
                 <br />
 
 
@@ -651,18 +770,23 @@ export async function POST(
 
 
               <p>
-                <strong>Customer:</strong>
+                <strong>
+                  Customer:
+                </strong>
                 <br />
 
 
                 ${escapeHtml(
-                  customerName || "Customer"
+                  customerName ||
+                    "Customer"
                 )}
               </p>
 
 
               <p>
-                <strong>Email:</strong>
+                <strong>
+                  Email:
+                </strong>
                 <br />
 
 
@@ -673,7 +797,24 @@ export async function POST(
               </p>
 
 
-              <h2 style="margin-top:30px;">
+              <p>
+                <strong>
+                  Phone number:
+                </strong>
+                <br />
+
+
+                ${escapeHtml(
+                  customerPhone
+                )}
+              </p>
+
+
+              <h2
+                style="
+                  margin-top:30px;
+                "
+              >
                 Items
               </h2>
 
@@ -730,14 +871,23 @@ export async function POST(
               </table>
 
 
-              <h2 style="margin-top:30px;">
+              <h2
+                style="
+                  margin-top:30px;
+                "
+              >
                 Shipping address
               </h2>
 
 
-              <p style="line-height:1.7;">
+              <p
+                style="
+                  line-height:1.7;
+                "
+              >
                 ${escapeHtml(
-                  customerName || "Customer"
+                  customerName ||
+                    "Customer"
                 )}
                 <br />
 
@@ -769,7 +919,8 @@ export async function POST(
 
                 ${escapeHtml(
                   shippingAddress
-                    ?.country_code || ""
+                    ?.country_code ||
+                    ""
                 )}
               </p>
 
@@ -781,10 +932,11 @@ export async function POST(
                   background:#f4f4f4;
                 "
               >
-                Sign in to your Allen Motion
-                Orders dashboard to copy this
-                information for Gene and manage
-                the order.
+                Sign in to your Allen
+                Motion Orders dashboard
+                to copy this information
+                for Jean and manage the
+                order.
               </p>
             </div>
           </div>
@@ -813,9 +965,9 @@ export async function POST(
     /*
      * Customer confirmation email
      *
-     * In test mode, it sends to your owner
-     * notification email instead of the fake
-     * PayPal Sandbox buyer email.
+     * In test mode, it sends to the owner
+     * notification email instead of a
+     * Sandbox buyer email.
      */
     const customerConfirmationRecipient =
       customerEmailTestMode
@@ -889,9 +1041,11 @@ export async function POST(
                   line-height:1.6;
                 "
               >
-                Thank you for your purchase,
+                Thank you for your
+                purchase,
                 ${escapeHtml(
-                  customerName || "Customer"
+                  customerName ||
+                    "Customer"
                 )}.
               </p>
             </div>
@@ -919,8 +1073,10 @@ export async function POST(
                       </strong>
 
 
-                      This customer confirmation
-                      was sent to the store owner.
+                      This customer
+                      confirmation was
+                      sent to the store
+                      owner.
                     </p>
                   `
                   : ""
@@ -933,8 +1089,9 @@ export async function POST(
                   line-height:1.6;
                 "
               >
-                We received your payment and
-                your order is now being prepared.
+                We received your payment
+                and your order is now
+                being prepared.
               </p>
 
 
@@ -949,7 +1106,9 @@ export async function POST(
 
 
               <p>
-                <strong>Order ID:</strong>
+                <strong>
+                  Order ID:
+                </strong>
                 <br />
 
 
@@ -958,7 +1117,9 @@ export async function POST(
 
 
               <p>
-                <strong>Total paid:</strong>
+                <strong>
+                  Total paid:
+                </strong>
                 <br />
 
 
@@ -1030,9 +1191,14 @@ export async function POST(
               </h2>
 
 
-              <p style="line-height:1.7;">
+              <p
+                style="
+                  line-height:1.7;
+                "
+              >
                 ${escapeHtml(
-                  customerName || "Customer"
+                  customerName ||
+                    "Customer"
                 )}
                 <br />
 
@@ -1064,7 +1230,8 @@ export async function POST(
 
                 ${escapeHtml(
                   shippingAddress
-                    ?.country_code || ""
+                    ?.country_code ||
+                    ""
                 )}
               </p>
 
@@ -1082,11 +1249,16 @@ export async function POST(
                 </strong>
 
 
-                <p style="margin-bottom:0;">
-                  Your order will be prepared
-                  for shipment. Tracking
-                  information will be provided
-                  once your order ships.
+                <p
+                  style="
+                    margin-bottom:0;
+                  "
+                >
+                  Your order will be
+                  prepared for shipment.
+                  Tracking information
+                  will be provided once
+                  your order ships.
                 </p>
               </div>
 
@@ -1099,9 +1271,9 @@ export async function POST(
                   line-height:1.6;
                 "
               >
-                This email confirms that your
-                payment was received. Keep it
-                for your records.
+                This email confirms that
+                your payment was received.
+                Keep it for your records.
               </p>
             </div>
           </div>
@@ -1133,6 +1305,7 @@ export async function POST(
       status: "COMPLETED",
       customerEmail,
       customerName,
+      customerPhone,
       shippingAddress,
       total,
       items: cart,

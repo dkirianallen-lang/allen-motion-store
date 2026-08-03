@@ -15,6 +15,7 @@ type CopyOrderButtonProps = {
   orderId: number;
   customerName: string | null;
   customerEmail: string | null;
+  customerPhone: string | null;
   addressLine1: string | null;
   addressLine2: string | null;
   city: string | null;
@@ -25,10 +26,20 @@ type CopyOrderButtonProps = {
 };
 
 
-const productNames: Record<string, string> = {
-  black: "ASCEND Track Graphic Tee — Vintage Black",
-  gray: "ASCEND Track Graphic Tee — Vintage Gray",
-  cream: "ASCEND Track Graphic Tee — Cream",
+const productNames: Record<
+  string,
+  string
+> = {
+  black:
+    "ASCEND Track Graphic Tee — Vintage Black",
+
+
+  gray:
+    "ASCEND Track Graphic Tee — Vintage Gray",
+
+
+  cream:
+    "ASCEND Track Graphic Tee — Cream",
 };
 
 
@@ -36,6 +47,7 @@ export default function CopyOrderButton({
   orderId,
   customerName,
   customerEmail,
+  customerPhone,
   addressLine1,
   addressLine2,
   city,
@@ -44,21 +56,28 @@ export default function CopyOrderButton({
   countryCode,
   items,
 }: CopyOrderButtonProps) {
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] =
+    useState(false);
 
 
   async function copyOrder() {
     const itemLines =
       items?.map((item) => {
-        const productName = item.slug
-          ? productNames[item.slug] || item.slug
-          : "Unknown product";
+        const productName =
+          item.slug
+            ? productNames[item.slug] ||
+              item.slug
+            : "Unknown product";
 
 
         return [
           `Product: ${productName}`,
-          `Size: ${item.size || "Unknown"}`,
-          `Quantity: ${item.quantity || 1}`,
+          `Size: ${
+            item.size || "Unknown"
+          }`,
+          `Quantity: ${
+            item.quantity || 1
+          }`,
         ].join("\n");
       }) || ["No items saved"];
 
@@ -75,32 +94,60 @@ export default function CopyOrderButton({
     const orderText = [
       `ALLEN MOTION CO. — ORDER #${orderId}`,
       "",
-      `Customer: ${customerName || "Customer"}`,
-      `Email: ${customerEmail || "No email saved"}`,
+      `Customer: ${
+        customerName || "Customer"
+      }`,
+      `Email: ${
+        customerEmail ||
+        "No email saved"
+      }`,
+      `Phone: ${
+        customerPhone ||
+        "No phone number saved"
+      }`,
       "",
       "ORDER:",
       itemLines.join("\n\n"),
       "",
       "SHIP TO:",
-      addressLine1 || "No address saved",
+      customerName || "Customer",
+      addressLine1 ||
+        "No address saved",
       addressLine2 || "",
       cityStateZip,
       countryCode || "",
+      "",
+      `Delivery phone: ${
+        customerPhone ||
+        "No phone number saved"
+      }`,
     ]
       .filter((line) => line !== "")
       .join("\n");
 
 
     try {
-      await navigator.clipboard.writeText(orderText);
+      await navigator.clipboard.writeText(
+        orderText
+      );
+
+
       setCopied(true);
 
 
       window.setTimeout(() => {
         setCopied(false);
       }, 2000);
-    } catch {
-      alert("The order could not be copied. Please try again.");
+    } catch (error) {
+      console.error(
+        "Order copy error:",
+        error
+      );
+
+
+      alert(
+        "The order could not be copied. Please try again."
+      );
     }
   }
 
@@ -112,8 +159,12 @@ export default function CopyOrderButton({
       style={{
         marginTop: "14px",
         padding: "11px 16px",
-        background: copied ? "#8fcf9a" : "transparent",
-        color: copied ? "#111" : "#f5eadf",
+        background: copied
+          ? "#8fcf9a"
+          : "transparent",
+        color: copied
+          ? "#111"
+          : "#f5eadf",
         border: copied
           ? "1px solid #8fcf9a"
           : "1px solid #c79a55",
@@ -121,7 +172,9 @@ export default function CopyOrderButton({
         cursor: "pointer",
       }}
     >
-      {copied ? "COPIED ✓" : "COPY FOR JEAN"}
+      {copied
+        ? "COPIED ✓"
+        : "COPY FOR JEAN"}
     </button>
   );
 }

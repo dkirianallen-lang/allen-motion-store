@@ -53,6 +53,12 @@ export default function CartPage() {
   ] = useState(false);
 
 
+  const [
+    customerPhone,
+    setCustomerPhone,
+  ] = useState("");
+
+
   const paypalClientId =
     process.env
       .NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
@@ -69,9 +75,13 @@ export default function CartPage() {
 
       if (!Array.isArray(savedCart)) {
         setCart([]);
+
+
         localStorage.removeItem(
           "allenMotionCart"
         );
+
+
         return;
       }
 
@@ -245,6 +255,20 @@ export default function CartPage() {
     return typeof error === "string"
       ? error
       : fallback;
+  }
+
+
+  function getCleanPhoneNumber() {
+    return customerPhone.trim();
+  }
+
+
+  function isPhoneNumberValid() {
+    const phoneDigits =
+      customerPhone.replace(/\D/g, "");
+
+
+    return phoneDigits.length >= 10;
   }
 
 
@@ -512,6 +536,41 @@ export default function CartPage() {
               </div>
 
 
+              <div className="checkoutPhoneField">
+                <label htmlFor="customerPhone">
+                  Phone number
+                </label>
+
+
+                <input
+                  id="customerPhone"
+                  name="customerPhone"
+                  type="tel"
+                  value={customerPhone}
+                  onChange={(event) => {
+                    setCustomerPhone(
+                      event.target.value
+                    );
+
+
+                    setCheckoutMessage("");
+                  }}
+                  placeholder="Example: (903) 555-1234"
+                  autoComplete="tel"
+                  inputMode="tel"
+                  required
+                />
+
+
+                <small>
+                  Required by the shipping
+                  carrier for delivery
+                  updates and accurate
+                  delivery.
+                </small>
+              </div>
+
+
               {!paypalClientId ? (
                 <p className="cartMessage">
                   PayPal Client ID is
@@ -535,11 +594,30 @@ export default function CartPage() {
                     forceReRender={[
                       JSON.stringify(cart),
                       total,
+                      customerPhone,
                     ]}
                     createOrder={async () => {
                       setCheckoutMessage(
                         ""
                       );
+
+
+                      if (
+                        !isPhoneNumberValid()
+                      ) {
+                        const errorMessage =
+                          "Please enter a valid phone number before checking out.";
+
+
+                        setCheckoutMessage(
+                          errorMessage
+                        );
+
+
+                        throw new Error(
+                          errorMessage
+                        );
+                      }
 
 
                       const response =
@@ -555,6 +633,10 @@ export default function CartPage() {
                             body:
                               JSON.stringify(
                                 {
+                                  customerPhone:
+                                    getCleanPhoneNumber(),
+
+
                                   cart:
                                     cart.map(
                                       (
@@ -612,6 +694,18 @@ export default function CartPage() {
                       );
 
 
+                      if (
+                        !isPhoneNumberValid()
+                      ) {
+                        setCheckoutMessage(
+                          "A valid phone number is required to complete this order."
+                        );
+
+
+                        return;
+                      }
+
+
                       const response =
                         await fetch(
                           "/api/paypal/capture-order",
@@ -627,6 +721,10 @@ export default function CartPage() {
                                 {
                                   orderID:
                                     data.orderID,
+
+
+                                  customerPhone:
+                                    getCleanPhoneNumber(),
 
 
                                   cart:
@@ -690,6 +788,9 @@ export default function CartPage() {
 
 
                       setCart([]);
+                      setCustomerPhone("");
+
+
                       setCheckoutMessage(
                         ""
                       );
@@ -709,6 +810,18 @@ export default function CartPage() {
                         "PayPal checkout error:",
                         error
                       );
+
+
+                      if (
+                        !isPhoneNumberValid()
+                      ) {
+                        setCheckoutMessage(
+                          "Please enter a valid phone number before checking out."
+                        );
+
+
+                        return;
+                      }
 
 
                       setCheckoutMessage(
